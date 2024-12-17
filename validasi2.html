@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .form-group input.invalid {
+            border-color: #ff4d4d;
+        }
+
+        .form-group .error {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            margin-top: 20px;
+            background-color: #e7f7ff;
+            border: 1px solid #007BFF;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Form Validation</h2>
+        <form id="form">
+            <div class="form-group">
+                <label for="nama">Nama Pelanggan</label>
+                <input type="text" id="nama" maxlength="30">
+                <span class="error" id="error-nama"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+                <span class="error" id="error-email"></span>
+            </div>
+            <div class="form-group">
+                <label for="jam">Jam Keberangkatan (00.00 - 23.59)</label>
+                <input type="text" id="jam" placeholder="hh.mm">
+                <span class="error" id="error-jam"></span>
+            </div>
+            <div class="form-group">
+                <label for="tujuan">Tujuan Keberangkatan</label>
+                <input type="text" id="tujuan">
+                <span class="error" id="error-tujuan"></span>
+            </div>
+            <div class="form-group">
+                <label for="tiket">Jumlah Tiket (1-10)</label>
+                <input type="number" id="tiket" min="1" max="10">
+                <span class="error" id="error-tiket"></span>
+            </div>
+            <button type="button" class="btn-submit" onclick="validateForm()">Submit</button>
+        </form>
+        <div id="output" class="output" style="display: none;"></div>
+    </div>
+
+    <script>
+        function validateForm() {
+            let isValid = true;
+
+            // Reset errors
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('input').forEach(el => el.classList.remove('invalid'));
+
+            // Get form values
+            const nama = document.getElementById('nama').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const jam = document.getElementById('jam').value.trim();
+            const tujuan = document.getElementById('tujuan').value.trim();
+            const tiket = document.getElementById('tiket').value.trim();
+
+            // Nama validation
+            if (!nama) {
+                isValid = false;
+                showError('nama', 'Nama wajib diisi.');
+            } else if (nama.length > 30) {
+                isValid = false;
+                showError('nama', 'Nama tidak boleh lebih dari 30 karakter.');
+            }
+
+            // Email validation
+            if (!email) {
+                isValid = false;
+                showError('email', 'Email wajib diisi.');
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                isValid = false;
+                showError('email', 'Format email tidak valid.');
+            }
+
+            // Jam validation
+            if (!jam) {
+                isValid = false;
+                showError('jam', 'Jam wajib diisi.');
+            } else if (!/^(?:[01]\d|2[0-3])\.[0-5]\d$/.test(jam)) {
+                isValid = false;
+                showError('jam', 'Format jam harus hh.mm (00.00 - 23.59).');
+            }
+
+            // Tujuan validation
+            if (!tujuan) {
+                isValid = false;
+                showError('tujuan', 'Tujuan wajib diisi.');
+            }
+
+            // Tiket validation
+            if (!tiket) {
+                isValid = false;
+                showError('tiket', 'Jumlah tiket wajib diisi.');
+            } else if (isNaN(tiket) || tiket < 1 || tiket > 10) {
+                isValid = false;
+                showError('tiket', 'Jumlah tiket harus antara 1-10.');
+            }
+
+            // Show output if valid
+            if (isValid) {
+                const output = `
+                    <p><strong>Data berhasil disubmit:</strong></p>
+                    <ul>
+                        <li>Nama: ${nama}</li>
+                        <li>Email: ${email}</li>
+                        <li>Jam Keberangkatan: ${jam}</li>
+                        <li>Tujuan: ${tujuan}</li>
+                        <li>Jumlah Tiket: ${tiket}</li>
+                    </ul>
+                `;
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = output;
+                outputDiv.style.display = 'block';
+            }
+        }
+
+        function showError(fieldId, message) {
+            document.getElementById(error-$fieldId).textContent = message;
+            document.getElementById(fieldId).classList.add('invalid');
+        }
+    </script>
+</body>
+</html>

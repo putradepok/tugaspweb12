@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <style>
+        .error {
+            color: red;
+        }
+        .invalid {
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Form Validasi</h1>
+    <form id="form">
+        <label>
+            Nama Pelanggan:
+            <input type="text" id="nama" maxlength="30">
+            <span class="error" id="error-nama"></span>
+        </label>
+        <br>
+        <label>
+            Email:
+            <input type="email" id="email">
+            <span class="error" id="error-email"></span>
+        </label>
+        <br>
+        <label>
+            Jam Keberangkatan (00.00 - 23.59):
+            <input type="text" id="jam" placeholder="00.00">
+            <span class="error" id="error-jam"></span>
+        </label>
+        <br>
+        <label>
+            Tujuan Keberangkatan:
+            <input type="text" id="tujuan">
+            <span class="error" id="error-tujuan"></span>
+        </label>
+        <br>
+        <label>
+            Jumlah Tiket (1-10):
+            <input type="number" id="tiket" min="1" max="10">
+            <span class="error" id="error-tiket"></span>
+        </label>
+        <br>
+        <button type="button" onclick="validateForm()">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        function validateForm() {
+            let isValid = true;
+
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('input').forEach(el => el.classList.remove('invalid'));
+
+            const nama = document.getElementById('nama').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const jam = document.getElementById('jam').value.trim();
+            const tujuan = document.getElementById('tujuan').value.trim();
+            const tiket = document.getElementById('tiket').value.trim();
+
+            if (!nama) {
+                isValid = false;
+                showError('nama', 'Nama wajib diisi.');
+            } else if (nama.length > 30) {
+                isValid = false;
+                showError('nama', 'Nama tidak boleh lebih dari 30 karakter.');
+            }
+
+            if (!email) {
+                isValid = false;
+                showError('email', 'Email wajib diisi.');
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                isValid = false;
+                showError('email', 'Format email tidak valid.');
+            }
+
+            if (!jam) {
+                isValid = false;
+                showError('jam', 'Jam wajib diisi.');
+            } else if (!/^(?:[01]\d|2[0-3])\.[0-5]\d$/.test(jam)) {
+                isValid = false;
+                showError('jam', 'Format jam harus hh.mm (00.00 - 23.59).');
+            }
+
+           
+            if (!tujuan) {
+                isValid = false;
+                showError('tujuan', 'Tujuan wajib diisi.');
+            }
+
+            if (!tiket) {
+                isValid = false;
+                showError('tiket', 'Jumlah tiket wajib diisi.');
+            } else if (isNaN(tiket) || tiket < 1 || tiket > 10) {
+                isValid = false;
+                showError('tiket', 'Jumlah tiket harus antara 1-10.');
+            }
+
+            if (isValid) {
+                const output = `
+                    <p>Data berhasil disubmit:</p>
+                    <ul>
+                        <li>Nama: ${nama}</li>
+                        <li>Email: ${email}</li>
+                        <li>Jam Keberangkatan: ${jam}</li>
+                        <li>Tujuan: ${tujuan}</li>
+                        <li>Jumlah Tiket: ${tiket}</li>
+                    </ul>
+                `;
+                document.getElementById('output').innerHTML = output;
+            }
+        }
+
+        function showError(fieldId, message) {
+            document.getElementById(error-$fieldId).textContent = message;
+            document.getElementById(fieldId).classList.add('invalid');
+        }
+    </script>
+</body>
+</html>
